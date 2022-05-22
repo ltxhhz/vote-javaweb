@@ -22,8 +22,8 @@ public class Utils {
     response.setContentType("application/json");
     if (!request.getContentType().equals("application/json")) {
       response.setStatus(400);
-      return false;
+      return true;
     }
-    return true;
+    return false;
   }
 }

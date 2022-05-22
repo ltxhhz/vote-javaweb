@@ -5,7 +5,6 @@ import cn.ltxhhz.vote.utils.JwtToken;
 import cn.ltxhhz.vote.utils.Utils;
 import com.alibaba.fastjson.JSONObject;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -23,7 +22,7 @@ public class login extends HttpServlet {
 
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    if(!Utils.requestCheck(request,response)) return;
+    if(Utils.requestCheck(request, response)) return;
     JSONObject reqJson = JSONObject.parseObject(Utils.getRequestBodyText(request));
     JSONObject resJson = new JSONObject();
     Connection conn = DB.getConn();
@@ -43,7 +42,7 @@ public class login extends HttpServlet {
         resJson.put("status", 0);
       }
     } catch (SQLException e) {
-      resJson.put("status", -1);
+      resJson.put("status", 0);
       e.printStackTrace();
     }
     response.getWriter().print(resJson.toJSONString());
