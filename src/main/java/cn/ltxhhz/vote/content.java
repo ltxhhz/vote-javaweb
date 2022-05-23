@@ -44,15 +44,16 @@ public class content extends HttpServlet {
       ps.setString(1, reqJson.getString("data"));
       ResultSet rs = ps.executeQuery();
       if (rs.next()) {
-        resJson.put("account", rs.getString("account"));
-        resJson.put("title", rs.getString("title"));
-        resJson.put("start", rs.getTimestamp("start").getTime());
-        resJson.put("end", rs.getTimestamp("end").getTime());
-        resJson.put("single", rs.getInt("single") == 1);
-        resJson.put("description", rs.getString("description"));
-        if (!resJson.getBooleanValue("single")) {
-          resJson.put("min", rs.getInt("min"));
-          resJson.put("max", rs.getInt("max"));
+        JSONObject data = new JSONObject();
+        data.put("account", rs.getString("account"));
+        data.put("title", rs.getString("title"));
+        data.put("start", rs.getTimestamp("start").getTime());
+        data.put("end", rs.getTimestamp("end").getTime());
+        data.put("single", rs.getInt("single") == 1);
+        data.put("description", rs.getString("description"));
+        if (!data.getBooleanValue("single")) {
+          data.put("min", rs.getInt("min"));
+          data.put("max", rs.getInt("max"));
         }
         int on = rs.getInt("optionsNum");
         if (on > 0) {
@@ -63,8 +64,10 @@ public class content extends HttpServlet {
           while (rs.next()) {
             opts.put(rs.getString("optionId"), rs.getString("content"));
           }
-          resJson.put("options", opts);
+          data.put("options", opts);
         }
+        resJson.put("data",data);
+        resJson.put("status",1);
       }
     } catch (SQLException e) {
       resJson.clear();
