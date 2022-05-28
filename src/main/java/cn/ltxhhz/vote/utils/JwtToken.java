@@ -34,7 +34,7 @@ public class JwtToken {
     //签发时间
     Date iatDate = new Date();
     Calendar nowTime = Calendar.getInstance();
-    //设置过期时间 -1小时后过期
+    //设置过期时间
     nowTime.add(remember?Calendar.MONTH:Calendar.DAY_OF_YEAR, 1);
     if (nowTime.getTimeInMillis()<iatDate.getTime()) nowTime.add(Calendar.YEAR,1);
     //得到时间
@@ -70,7 +70,7 @@ public class JwtToken {
     try {
       jwt = verify.verify(token);
     } catch (Exception e) {
-//      System.out.println("登录凭证已过期，请重新登录");
+      System.out.println("登录凭证已过期，请重新登录");
       return null;
     }
     return jwt.getClaims();

@@ -25,11 +25,11 @@ public class content extends HttpServlet {
     if (reqJson.containsKey("account") && reqJson.containsKey("skey")) {
       level = JwtToken.verifyToken(reqJson.getString("skey"), reqJson.getString("account")) ? 1 : 2;
       if (level == 1) {
-        String sql = "select permission from users where account=" + reqJson.getString("account");
+        String sql = "select permission from users where account='" + reqJson.getString("account")+"'";
         try {
           Statement stm = conn.createStatement();
           ResultSet rs = stm.executeQuery(sql);
-          if (rs.next()) level = rs.getInt(0);
+          if (rs.next()) level = rs.getInt(1);
         } catch (SQLException e) {
           resJson.put("status", 0);
           response.getWriter().print(resJson.toJSONString());
@@ -67,6 +67,9 @@ public class content extends HttpServlet {
           data.put("options", opts);
         }
         resJson.put("data",data);
+        resJson.put("status",1);
+      }else{
+        resJson.put("data","");
         resJson.put("status",1);
       }
     } catch (SQLException e) {
