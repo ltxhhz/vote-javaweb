@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @WebServlet(name = "addOption", value = "/api/addOption")
 @MultipartConfig
@@ -29,6 +30,7 @@ public class addOption extends HttpServlet {
   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     if (Utils.requestCheck(request, response, "multipart/form-data")) return;
     JSONObject resJson = new JSONObject();
+    Map<String, String> user = Utils.getAccountAndSkey(request);
     // 创建上传所需要的两个对象
     DiskFileItemFactory factory = new DiskFileItemFactory();  // 磁盘文件对象
     ServletFileUpload upload = new ServletFileUpload(factory);   // 文件上传对象
@@ -47,8 +49,7 @@ public class addOption extends HttpServlet {
       response.getWriter().print(resJson.toJSONString());
       return;
     }
-    System.out.println(System.getProperty("file.encoding"));
-    String skey = "", account = "", title = "", uuid = "", n = "";
+    String skey = user.get("skey"), account = user.get("account"), title = "", uuid = "", n = "";
     FileItem fi = null;
     // 遍历 list容器，处理 每个数据项 中的信息
     for (FileItem item : items) {
@@ -56,12 +57,6 @@ public class addOption extends HttpServlet {
       // 判断是否是普通项
       if (item.isFormField()) { // 处理 普通数据项 信息
         switch (name) {
-          case "skey":
-            skey = item.getString("utf8");
-            break;
-          case "account":
-            account = item.getString("utf8");
-            break;
           case "title":
             title = item.getString("utf8");
             break;
@@ -153,7 +148,6 @@ public class addOption extends HttpServlet {
 
   /**
    * 处理 文件数据项
-   *
    */
   private String handleFileField(FileItem item) throws Exception {
     // 获取 文件数据项中的 文件名

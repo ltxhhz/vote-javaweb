@@ -76,6 +76,7 @@ public class JwtToken {
     return jwt.getClaims();
   }
   public static boolean verifyToken(String token,String account ){
+    if (token==null||account==null) return false;
     Map<String, Claim> res = decryptToken(token);
     if (res==null) return false;
     return res.get("aud").asString().equals(account);

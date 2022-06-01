@@ -14,6 +14,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Map;
 
 
 @WebServlet(name = "create", value = "/api/create")
@@ -24,7 +25,8 @@ public class create extends HttpServlet {
     if (Utils.requestCheck(request, response)) return;
     JSONObject reqJson = JSONObject.parseObject(Utils.getRequestBodyText(request));
     JSONObject resJson = new JSONObject();
-    if (!JwtToken.verifyToken(reqJson.getString("skey"), reqJson.getString("account"))) {
+    Map<String, String> user = Utils.getAccountAndSkey(request);
+    if (!JwtToken.verifyToken(user.get("skey"), user.get("account"))) {
       resJson.clear();
       resJson.put("status", "-1");
       response.getWriter().print(resJson.toJSONString());
@@ -37,7 +39,7 @@ public class create extends HttpServlet {
       PreparedStatement ps = conn.prepareStatement(sql);
       String uuid = Utils.uuid();
       ps.setString(1, uuid);
-      ps.setString(2, reqJson.getString("account"));
+      ps.setString(2, user.get("account"));
       ps.setString(3, data.getString("title"));
       ps.setTimestamp(4, new Timestamp(data.getLongValue("start")));
       ps.setTimestamp(5, new Timestamp(data.getLongValue("end")));
