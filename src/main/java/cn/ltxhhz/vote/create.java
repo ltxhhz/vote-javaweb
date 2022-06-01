@@ -5,7 +5,6 @@ import cn.ltxhhz.vote.utils.JwtToken;
 import cn.ltxhhz.vote.utils.Utils;
 import com.alibaba.fastjson.JSONObject;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +14,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.UUID;
 
 
 @WebServlet(name = "create", value = "/api/create")
@@ -27,7 +25,8 @@ public class create extends HttpServlet {
     JSONObject reqJson = JSONObject.parseObject(Utils.getRequestBodyText(request));
     JSONObject resJson = new JSONObject();
     if (!JwtToken.verifyToken(reqJson.getString("skey"), reqJson.getString("account"))) {
-      resJson.put("status", "0");
+      resJson.clear();
+      resJson.put("status", "-1");
       response.getWriter().print(resJson.toJSONString());
       return;
     }
@@ -36,7 +35,7 @@ public class create extends HttpServlet {
     String sql = "insert into list(uuid,account,title,start,end,single,description,min,max) values (?,?,?,?,?,?,?,?,?)";
     try {
       PreparedStatement ps = conn.prepareStatement(sql);
-      String uuid = UUID.randomUUID().toString().replace("-", "");
+      String uuid = Utils.uuid();
       ps.setString(1, uuid);
       ps.setString(2, reqJson.getString("account"));
       ps.setString(3, data.getString("title"));

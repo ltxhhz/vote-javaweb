@@ -5,7 +5,6 @@ import cn.ltxhhz.vote.utils.JwtToken;
 import cn.ltxhhz.vote.utils.Utils;
 import com.alibaba.fastjson.JSONObject;
 
-import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
@@ -38,7 +37,7 @@ public class content extends HttpServlet {
         }
       }
     }
-    String sql = "select * from list where uuid=?";
+    String sql = "select *,visit,part from list,num where list.uuid=? and list.uuid=num.uuid";
     try {
       PreparedStatement ps = conn.prepareStatement(sql);
       ps.setString(1, reqJson.getString("data"));
@@ -51,6 +50,8 @@ public class content extends HttpServlet {
         data.put("end", rs.getTimestamp("end").getTime());
         data.put("single", rs.getInt("single") == 1);
         data.put("description", rs.getString("description"));
+        data.put("visit",rs.getInt("visit"));
+        data.put("part",rs.getInt("part"));
         if (!data.getBooleanValue("single")) {
           data.put("min", rs.getInt("min"));
           data.put("max", rs.getInt("max"));
