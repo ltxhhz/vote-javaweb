@@ -1,5 +1,7 @@
 package cn.ltxhhz.vote.utils;
 
+import com.alibaba.fastjson.JSONObject;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -68,5 +70,29 @@ public class Utils {
     map.put("account", cm.get("account") == null ? null : cm.get("account").getValue());
     map.put("skey", cm.get("skey") == null ? null : cm.get("skey").getValue());
     return map;
+  }
+
+  public static void returnFail(JSONObject resJson,HttpServletResponse response) throws IOException {
+    returnFail(resJson,response,0);
+  }
+  public static void returnFail(JSONObject resJson,HttpServletResponse response,int status ) throws IOException {
+    resJson.clear();
+    resJson.put("status", status);
+    response.getWriter().print(resJson.toJSONString());
+  }
+  public static void returnFail(JSONObject resJson,HttpServletResponse response,String msg) throws IOException {
+    resJson.clear();
+    resJson.put("status", 0);
+    resJson.put("msg",msg);
+    response.getWriter().print(resJson.toJSONString());
+  }
+  public static void returnSuccess(JSONObject resJson,HttpServletResponse response) throws IOException {
+    resJson.put("status",1);
+    response.getWriter().print(resJson.toJSONString());
+  }
+  public static void returnSuccess(JSONObject resJson,HttpServletResponse response,Object data) throws IOException {
+    resJson.put("status",1);
+    resJson.put("data",data);
+    response.getWriter().print(resJson.toJSONString());
   }
 }

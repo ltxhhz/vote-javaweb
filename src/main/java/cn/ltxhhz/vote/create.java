@@ -27,9 +27,7 @@ public class create extends HttpServlet {
     JSONObject resJson = new JSONObject();
     Map<String, String> user = Utils.getAccountAndSkey(request);
     if (!JwtToken.verifyToken(user.get("skey"), user.get("account"))) {
-      resJson.clear();
-      resJson.put("status", "-1");
-      response.getWriter().print(resJson.toJSONString());
+      Utils.returnFail(resJson,response,-1);
       return;
     }
     JSONObject data = reqJson.getJSONObject("data");
@@ -50,13 +48,13 @@ public class create extends HttpServlet {
       ps.setInt(9, single ? 0 : data.getIntValue("max"));
       int rs = ps.executeUpdate();
       if (rs > 0) {
-        resJson.put("data",uuid);
-        resJson.put("status", 1);
+        Utils.returnSuccess(resJson,response,uuid);
+      }else{
+        Utils.returnFail(resJson,response);
       }
     } catch (SQLException e) {
-      resJson.put("status", 0);
+      Utils.returnFail(resJson,response);
       e.printStackTrace();
     }
-    response.getWriter().print(resJson.toJSONString());
   }
 }

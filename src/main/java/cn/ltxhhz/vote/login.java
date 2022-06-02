@@ -36,15 +36,13 @@ public class login extends HttpServlet {
         JSONObject data = new JSONObject();
         data.put("skey", JwtToken.createToken(reqJson.getString("account")));
         data.put("permission", rs.getInt("permission"));
-        resJson.put("data", data);
-        resJson.put("status", 1);
+        Utils.returnSuccess(resJson,response,data);
       } else {
-        resJson.put("status", 0);
+        Utils.returnFail(resJson,response);
       }
     } catch (SQLException e) {
-      resJson.put("status", 0);
+      Utils.returnFail(resJson,response);
       e.printStackTrace();
     }
-    response.getWriter().print(resJson.toJSONString());
   }
 }

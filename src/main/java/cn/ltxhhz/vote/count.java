@@ -21,13 +21,16 @@ public class count extends HttpServlet {
     if (Utils.requestCheck(request, response)) return;
     Map<String, String> user = Utils.getAccountAndSkey(request);
     JSONObject reqJson = JSONObject.parseObject(Utils.getRequestBodyText(request));
+    JSONObject resJson = new JSONObject();
 //    if (user.get("account") != null && user.get("skey") != null) {
 //      JwtToken.verifyToken(user.get("skey"), user.get("account"));
 //    }else{
       try {
         visitAdd(reqJson.getString("uuid"));
+        Utils.returnSuccess(resJson,response);
       } catch (SQLException e) {
         e.printStackTrace();
+        Utils.returnFail(resJson,response);
       }
 //    }
   }

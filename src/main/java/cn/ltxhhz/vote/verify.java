@@ -19,8 +19,6 @@ public class verify extends HttpServlet {
     response.setContentType("application/json");
     JSONObject resJson = new JSONObject();
     Map<String, String> user = Utils.getAccountAndSkey(request);
-    resJson.put("data",JwtToken.verifyToken(user.get("skey"),user.get("account")));
-    resJson.put("status",1);
-    response.getWriter().print(resJson.toJSONString());
+    Utils.returnSuccess(resJson,response,JwtToken.verifyToken(user.get("skey"),user.get("account")));
   }
 }

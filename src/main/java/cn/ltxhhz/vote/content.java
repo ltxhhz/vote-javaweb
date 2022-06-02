@@ -3,6 +3,7 @@ package cn.ltxhhz.vote;
 import cn.ltxhhz.vote.database.DB;
 import cn.ltxhhz.vote.utils.JwtToken;
 import cn.ltxhhz.vote.utils.Utils;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import javax.servlet.http.*;
@@ -34,16 +35,14 @@ public class content extends HttpServlet {
           ResultSet rs = ps.executeQuery();
           if (rs.next()) level = rs.getInt(1);
         } catch (SQLException e) {
-          resJson.put("status", 0);
-          response.getWriter().print(resJson.toJSONString());
           e.printStackTrace();
+          Utils.returnFail(resJson,response);
           return;
         }
       }
     }
-    String sql = "select *,visit,part from list,num where list.uuid=? and list.uuid=num.uuid";
     try {
-      PreparedStatement ps = conn.prepareStatement(sql);
+      PreparedStatement ps = conn.prepareStatement("select *,visit,part from list,num where list.uuid=? and list.uuid=num.uuid");
       ps.setString(1, reqJson.getString("data"));
       ResultSet rs = ps.executeQuery();
       if (rs.next()) {
@@ -62,27 +61,33 @@ public class content extends HttpServlet {
         }
         int on = rs.getInt("optionsNum");
         if (on > 0) {
-          sql = "select optionId,content from options where uuid=?";
-          ps = conn.prepareStatement(sql);
+          ps = conn.prepareStatement("select optionId,content,image from options where uuid=?");
           ps.setString(1, rs.getString("uuid"));
           rs = ps.executeQuery();
-          JSONObject opts = new JSONObject();
+          JSONArray arr = new JSONArray();
           while (rs.next()) {
-            opts.put(rs.getString("optionId"), rs.getString("content"));
+            JSONObject obj = new JSONObject();
+            obj.put("optionId",rs.getString("optionId"));
+            obj.put("content",rs.getString("content"));
+            obj.put("image",rs.getString("image"));
+            arr.add(obj);
           }
-          data.put("options", opts);
+          data.put("options", arr);
         }
-        resJson.put("data", data);
-        resJson.put("status", 1);
+        ps = conn.prepareStatement("select * from history where uuid=? and account=?");
+        ps.setString(1,reqJson.getString("uuid"));
+        ps.setString(2,account);
+        rs=ps.executeQuery();
+        if (rs.next()){
+          data.put("haveVoted",1);
+        }
+        Utils.returnSuccess(resJson,response,data);
       } else {
-        resJson.put("data", "");
-        resJson.put("status", 1);
+        Utils.returnSuccess(resJson,response,"");
       }
     } catch (SQLException e) {
-      resJson.clear();
-      resJson.put("status", 0);
+      Utils.returnFail(resJson,response);
       e.printStackTrace();
     }
-    response.getWriter().print(resJson.toJSONString());
   }
 }
