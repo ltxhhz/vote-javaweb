@@ -82,11 +82,17 @@ public class addOption extends HttpServlet {
         optNum = rs.getInt(1);
       } else {
         Utils.returnFail(resJson,response);
+        conn.close();
         return;
       }
     } catch (SQLException e) {
       e.printStackTrace();
       Utils.returnFail(resJson,response);
+      try {
+        conn.close();
+      } catch (SQLException ex) {
+        ex.printStackTrace();
+      }
       return;
     }
     if (fi != null) {
@@ -94,11 +100,17 @@ public class addOption extends HttpServlet {
         n = handleFileField(fi);
         if (n.equals("")) {
           Utils.returnFail(resJson,response);
+          conn.close();
           return;
         }
       } catch (Exception e) {
         e.printStackTrace();
         Utils.returnFail(resJson,response);
+        try {
+          conn.close();
+        } catch (SQLException ex) {
+          ex.printStackTrace();
+        }
         return;
       }
     }
@@ -114,6 +126,7 @@ public class addOption extends HttpServlet {
       ps.setString(4, n);
       if (ps.executeUpdate() == 0) {
         Utils.returnFail(resJson,response);
+        conn.close();
         return;
       }
       ps = conn.prepareStatement("update list set optionsNum=? where uuid=?");
@@ -121,11 +134,17 @@ public class addOption extends HttpServlet {
       ps.setString(2, uuid);
       if (ps.executeUpdate() == 0) {
         Utils.returnFail(resJson,response);
+        conn.close();
         return;
       }
     } catch (SQLException e) {
       e.printStackTrace();
       Utils.returnFail(resJson,response);
+      try {
+        conn.close();
+      } catch (SQLException ex) {
+        ex.printStackTrace();
+      }
       return;
     }
     Utils.returnSuccess(resJson,response,data);

@@ -37,13 +37,18 @@ public class content extends HttpServlet {
         } catch (SQLException e) {
           e.printStackTrace();
           Utils.returnFail(resJson,response);
+          try {
+            conn.close();
+          } catch (SQLException ex) {
+            ex.printStackTrace();
+          }
           return;
         }
       }
     }
     try {
       PreparedStatement ps = conn.prepareStatement("select *,visit,part from list,num where list.uuid=? and list.uuid=num.uuid");
-      ps.setString(1, reqJson.getString("data"));
+      ps.setString(1, reqJson.getString("uuid"));
       ResultSet rs = ps.executeQuery();
       if (rs.next()) {
         JSONObject data = new JSONObject();
@@ -80,6 +85,7 @@ public class content extends HttpServlet {
         rs=ps.executeQuery();
         if (rs.next()){
           data.put("haveVoted",1);
+          data.put("choice",rs.getString("choice"));
         }
         Utils.returnSuccess(resJson,response,data);
       } else {
@@ -87,6 +93,11 @@ public class content extends HttpServlet {
       }
     } catch (SQLException e) {
       Utils.returnFail(resJson,response);
+      e.printStackTrace();
+    }
+    try {
+      conn.close();
+    } catch (SQLException e) {
       e.printStackTrace();
     }
   }

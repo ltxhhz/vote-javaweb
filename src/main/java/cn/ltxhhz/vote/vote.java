@@ -40,6 +40,7 @@ public class vote extends HttpServlet {
       if (rs.next()) {
         if (!(System.currentTimeMillis() > rs.getTimestamp("start").getTime() && System.currentTimeMillis() < rs.getTimestamp("end").getTime())) {
           Utils.returnFail(resJson, response, "投票已过期");
+          conn.close();
           return;
         }
         boolean single = rs.getInt("single") == 1;
@@ -51,9 +52,10 @@ public class vote extends HttpServlet {
           (!single && checked.size() > max && checked.size() < min) ||
           optNum == 0) {
           Utils.returnFail(resJson, response);
+          conn.close();
           return;
         }
-        ps = conn.prepareStatement("insert into history (account, uuid, choise) values (?,?,?);");
+        ps = conn.prepareStatement("insert into history (account, uuid, choice) values (?,?,?);");
         ps.setString(1, account);
         ps.setString(2, reqJson.getString("uuid"));
         Pattern p = Pattern.compile("-(\\d+)$");
@@ -62,10 +64,11 @@ public class vote extends HttpServlet {
           String str = checked.getString(i);
           Matcher m = p.matcher(str);
           if (m.find()) {
-            if (opts.equals("")) opts = opts.concat(",").concat(m.group(0));
-            else opts = opts.concat(m.group(0));
+            if (opts.equals("")) opts = opts.concat(m.group(1));
+            else opts = opts.concat(",").concat(m.group(1));
           } else {
             Utils.returnFail(resJson, response);
+            conn.close();
             return;
           }
         }
@@ -83,6 +86,10 @@ public class vote extends HttpServlet {
       e.printStackTrace();
       Utils.returnFail(resJson, response);
     }
-
+    try {
+      conn.close();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
   }
 }

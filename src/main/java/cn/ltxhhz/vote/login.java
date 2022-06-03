@@ -44,5 +44,10 @@ public class login extends HttpServlet {
       Utils.returnFail(resJson,response);
       e.printStackTrace();
     }
+    try {
+      conn.close();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
   }
 }

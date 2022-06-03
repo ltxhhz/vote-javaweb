@@ -40,6 +40,6 @@ public class count extends HttpServlet {
     PreparedStatement ps=conn.prepareStatement("update num set visit=visit+1 where uuid=?");
     ps.setString(1,uuid);
     ps.executeUpdate();
-
+    conn.close();
   }
 }

@@ -959,15 +959,14 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
       <NotNull>1</NotNull>
       <Position>3</Position>
     </column>
-    <column id="290" parent="282" name="choise">
+    <column id="290" parent="282" name="choice">
       <DataType>varchar(255)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>4</Position>
     </column>
     <column id="291" parent="282" name="time">
       <DataType>timestamp|0s</DataType>
-      <NotNull>1</NotNull>
-      <OnUpdate>CURRENT_TIMESTAMP</OnUpdate>
+      <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <Position>5</Position>
     </column>
     <key id="292" parent="282" name="PRIMARY">
@@ -1113,8 +1112,8 @@ uuid</ColNames>
     </column>
     <column id="319" parent="286" name="registerTime">
       <DataType>timestamp|0s</DataType>
+      <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <NotNull>1</NotNull>
-      <OnUpdate>CURRENT_TIMESTAMP</OnUpdate>
       <Position>5</Position>
     </column>
     <key id="320" parent="286" name="PRIMARY">
