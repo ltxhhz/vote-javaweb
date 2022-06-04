@@ -30,13 +30,13 @@ public class JwtToken {
   /**
    * 生成token
    */
-  public static String createToken(String account,boolean remember) {
+  public static String createToken(String account, boolean remember) {
     //签发时间
     Date iatDate = new Date();
     Calendar nowTime = Calendar.getInstance();
     //设置过期时间
-    nowTime.add(remember?Calendar.MONTH:Calendar.DAY_OF_YEAR, 1);
-    if (nowTime.getTimeInMillis()<iatDate.getTime()) nowTime.add(Calendar.YEAR,1);
+    nowTime.add(remember ? Calendar.MONTH : Calendar.DAY_OF_YEAR, 1);
+    if (nowTime.getTimeInMillis() < iatDate.getTime()) nowTime.add(Calendar.YEAR, 1);
     //得到时间
     Date expiresDate = nowTime.getTime();
     //实例化组成头部header的map
@@ -75,10 +75,11 @@ public class JwtToken {
     }
     return jwt.getClaims();
   }
-  public static boolean verifyToken(String token,String account ){
-    if (token==null||account==null) return false;
+
+  public static boolean verifyToken(String token, String account) {
+    if (token == null || account == null) return false;
     Map<String, Claim> res = decryptToken(token);
-    if (res==null) return false;
+    if (res == null) return false;
     return res.get("aud").asString().equals(account);
   }
 }

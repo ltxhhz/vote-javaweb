@@ -74,10 +74,10 @@ public class vote extends HttpServlet {
         }
         ps.setString(3, opts);
 
-        if (ps.executeUpdate()==0){
+        if (ps.executeUpdate() == 0) {
           Utils.returnFail(resJson, response);
-        }else{
-          Utils.returnSuccess(resJson,response);
+        } else {
+          Utils.returnSuccess(resJson, response);
         }
       } else {
         Utils.returnFail(resJson, response);

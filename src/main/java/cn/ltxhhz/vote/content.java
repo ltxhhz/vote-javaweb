@@ -56,10 +56,12 @@ public class content extends HttpServlet {
         data.put("title", rs.getString("title"));
         data.put("start", rs.getTimestamp("start").getTime());
         data.put("end", rs.getTimestamp("end").getTime());
-        data.put("single", rs.getInt("single") == 1);
+        data.put("single", rs.getBoolean("single"));
         data.put("description", rs.getString("description"));
         data.put("visit", rs.getInt("visit"));
         data.put("part", rs.getInt("part"));
+        data.put("hideResult", rs.getBoolean("hideResult"));
+        data.put("everyday", rs.getBoolean("everyday"));
         if (!data.getBooleanValue("single")) {
           data.put("min", rs.getInt("min"));
           data.put("max", rs.getInt("max"));

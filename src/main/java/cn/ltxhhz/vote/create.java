@@ -42,13 +42,16 @@ public class create extends HttpServlet {
       ps.setTimestamp(4, new Timestamp(data.getLongValue("start")));
       ps.setTimestamp(5, new Timestamp(data.getLongValue("end")));
       boolean single = data.getBooleanValue("single");
-      ps.setInt(6, single ? 1 : 0);
+      ps.setBoolean(6, single);
       ps.setString(7, data.getString("description"));
       ps.setInt(8, single ? 0 : data.getIntValue("min"));
       ps.setInt(9, single ? 0 : data.getIntValue("max"));
       int rs = ps.executeUpdate();
       if (rs > 0) {
         Utils.returnSuccess(resJson,response,uuid);
+        ps=conn.prepareStatement("insert into num (uuid) values (?);");
+        ps.setString(1,uuid);
+        ps.executeUpdate();
       }else{
         Utils.returnFail(resJson,response);
       }

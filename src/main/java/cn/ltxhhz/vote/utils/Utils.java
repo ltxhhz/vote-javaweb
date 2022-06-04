@@ -72,27 +72,31 @@ public class Utils {
     return map;
   }
 
-  public static void returnFail(JSONObject resJson,HttpServletResponse response) throws IOException {
-    returnFail(resJson,response,0);
+  public static void returnFail(JSONObject resJson, HttpServletResponse response) throws IOException {
+    returnFail(resJson, response, 0);
   }
-  public static void returnFail(JSONObject resJson,HttpServletResponse response,int status ) throws IOException {
+
+  public static void returnFail(JSONObject resJson, HttpServletResponse response, int status) throws IOException {
     resJson.clear();
     resJson.put("status", status);
     response.getWriter().print(resJson.toJSONString());
   }
-  public static void returnFail(JSONObject resJson,HttpServletResponse response,String msg) throws IOException {
+
+  public static void returnFail(JSONObject resJson, HttpServletResponse response, String msg) throws IOException {
     resJson.clear();
     resJson.put("status", 0);
-    resJson.put("msg",msg);
+    resJson.put("msg", msg);
     response.getWriter().print(resJson.toJSONString());
   }
-  public static void returnSuccess(JSONObject resJson,HttpServletResponse response) throws IOException {
-    resJson.put("status",1);
+
+  public static void returnSuccess(JSONObject resJson, HttpServletResponse response) throws IOException {
+    resJson.put("status", 1);
     response.getWriter().print(resJson.toJSONString());
   }
-  public static void returnSuccess(JSONObject resJson,HttpServletResponse response,Object data) throws IOException {
-    resJson.put("status",1);
-    resJson.put("data",data);
+
+  public static void returnSuccess(JSONObject resJson, HttpServletResponse response, Object data) throws IOException {
+    resJson.put("status", 1);
+    resJson.put("data", data);
     response.getWriter().print(resJson.toJSONString());
   }
 }

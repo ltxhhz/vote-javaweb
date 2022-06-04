@@ -29,7 +29,7 @@ public class addOption extends HttpServlet {
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     if (Utils.requestCheck(request, response, "multipart/form-data")) return;
-    JSONObject resJson = new JSONObject();
+    JSONObject reqJSON = new JSONObject();
     JSONObject data = new JSONObject();
     Map<String, String> user = Utils.getAccountAndSkey(request);
     // 创建上传所需要的两个对象
@@ -45,10 +45,12 @@ public class addOption extends HttpServlet {
       items = upload.parseRequest(new ServletRequestContext(request));
     } catch (FileUploadException e) {
       e.printStackTrace();
-      Utils.returnFail(resJson,response);
+      Utils.returnFail(reqJSON, response);
       return;
     }
     String skey = user.get("skey"), account = user.get("account"), title = "", uuid = "", n = "";
+    String type = "add", optionId = "";
+    boolean noImage = false;
     FileItem fi = null;
     // 遍历 list容器，处理 每个数据项 中的信息
     for (FileItem item : items) {
@@ -62,6 +64,15 @@ public class addOption extends HttpServlet {
           case "uuid":
             uuid = item.getString("utf8");
             break;
+          case "type":
+            type = item.getString("utf8");
+            break;
+          case "optionId":
+            optionId = item.getString("utf8");
+            break;
+          case "noImage":
+            noImage = true;
+            break;
         }
       } else { // 处理 文件数据项 信息
         fi = item;
@@ -69,7 +80,7 @@ public class addOption extends HttpServlet {
     }
 
     if (!JwtToken.verifyToken(skey, account)) {
-      Utils.returnFail(resJson,response,-1);
+      Utils.returnFail(reqJSON, response, -1);
       return;
     }
     Connection conn = DB.getConn();
@@ -81,13 +92,13 @@ public class addOption extends HttpServlet {
       if (rs.next()) {
         optNum = rs.getInt(1);
       } else {
-        Utils.returnFail(resJson,response);
+        Utils.returnFail(reqJSON, response);
         conn.close();
         return;
       }
     } catch (SQLException e) {
       e.printStackTrace();
-      Utils.returnFail(resJson,response);
+      Utils.returnFail(reqJSON, response);
       try {
         conn.close();
       } catch (SQLException ex) {
@@ -99,13 +110,13 @@ public class addOption extends HttpServlet {
       try {
         n = handleFileField(fi);
         if (n.equals("")) {
-          Utils.returnFail(resJson,response);
+          Utils.returnFail(reqJSON, response);
           conn.close();
           return;
         }
       } catch (Exception e) {
         e.printStackTrace();
-        Utils.returnFail(resJson,response);
+        Utils.returnFail(reqJSON, response);
         try {
           conn.close();
         } catch (SQLException ex) {
@@ -116,30 +127,51 @@ public class addOption extends HttpServlet {
     }
 
     try {
-      PreparedStatement ps = conn.prepareStatement("insert into options values (?,?,?,?);");
-      ps.setString(1, uuid);
-      ps.setString(2, uuid + "-" + (optNum + 1));
-      data.put("optionId", uuid + "-" + (optNum + 1));
-      data.put("content", title);
-      data.put("image", n);
-      ps.setString(3, title);
-      ps.setString(4, n);
+      PreparedStatement ps;
+      if (type.equals("add")) {
+        ps = conn.prepareStatement("insert into options (uuid, optionId, content, image) values (?,?,?,?);");
+        ps.setString(1, uuid);
+        ps.setString(2, uuid + "-" + (optNum + 1));
+        data.put("optionId", uuid + "-" + (optNum + 1));
+        data.put("content", title);
+        data.put("image", n);
+        ps.setString(3, title);
+        ps.setString(4, n);
+      } else {
+        if (fi == null) {
+          if (noImage) {
+            ps = conn.prepareStatement("update options set content =?,image='' where optionId=?;");
+          } else {
+            ps = conn.prepareStatement("update options set content =? where optionId=?;");
+          }
+          ps.setString(1, title);
+          ps.setString(2, optionId);
+        } else {
+          ps = conn.prepareStatement("update options set content =?,image=? where optionId=?;");
+          ps.setString(1, title);
+          ps.setString(2, n);
+          ps.setString(3, optionId);
+          reqJSON.put("data",n);
+        }
+      }
       if (ps.executeUpdate() == 0) {
-        Utils.returnFail(resJson,response);
+        Utils.returnFail(reqJSON, response);
         conn.close();
         return;
       }
-      ps = conn.prepareStatement("update list set optionsNum=? where uuid=?");
-      ps.setInt(1, optNum + 1);
-      ps.setString(2, uuid);
-      if (ps.executeUpdate() == 0) {
-        Utils.returnFail(resJson,response);
-        conn.close();
-        return;
+      if (type.equals("add")) {
+        ps = conn.prepareStatement("update list set optionsNum=? where uuid=?");
+        ps.setInt(1, optNum + 1);
+        ps.setString(2, uuid);
+        if (ps.executeUpdate() == 0) {
+          Utils.returnFail(reqJSON, response);
+          conn.close();
+          return;
+        }
       }
     } catch (SQLException e) {
       e.printStackTrace();
-      Utils.returnFail(resJson,response);
+      Utils.returnFail(reqJSON, response);
       try {
         conn.close();
       } catch (SQLException ex) {
@@ -147,7 +179,8 @@ public class addOption extends HttpServlet {
       }
       return;
     }
-    Utils.returnSuccess(resJson,response,data);
+    if (type.equals("add")) Utils.returnSuccess(reqJSON, response, data);
+    else Utils.returnSuccess(reqJSON, response);
   }
 
   /**

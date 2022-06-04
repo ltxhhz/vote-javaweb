@@ -967,6 +967,7 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
     <column id="291" parent="282" name="time">
       <DataType>timestamp|0s</DataType>
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
+      <NotNull>1</NotNull>
       <Position>5</Position>
     </column>
     <key id="292" parent="282" name="PRIMARY">
@@ -1001,7 +1002,7 @@ account</ColNames>
       <Position>5</Position>
     </column>
     <column id="298" parent="283" name="single">
-      <DataType>int(1) unsigned zerofill|0s</DataType>
+      <DataType>int(1) unsigned|0s</DataType>
       <NotNull>1</NotNull>
       <Position>6</Position>
     </column>
@@ -1026,97 +1027,115 @@ account</ColNames>
       <DefaultExpression>0</DefaultExpression>
       <Position>10</Position>
     </column>
-    <index id="303" parent="283" name="uuid">
+    <column id="303" parent="283" name="everyday">
+      <DataType>int(11)|0s</DataType>
+      <DefaultExpression>0</DefaultExpression>
+      <NotNull>1</NotNull>
+      <Position>11</Position>
+    </column>
+    <column id="304" parent="283" name="hideResult">
+      <DataType>int(11)|0s</DataType>
+      <DefaultExpression>0</DefaultExpression>
+      <NotNull>1</NotNull>
+      <Position>12</Position>
+    </column>
+    <index id="305" parent="283" name="uuid">
       <ColNames>uuid</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="304" parent="283" name="PRIMARY">
+    <key id="306" parent="283" name="PRIMARY">
       <ColNames>uuid
 account</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
     </key>
-    <column id="305" parent="284" name="uuid">
+    <column id="307" parent="284" name="uuid">
       <DataType>char(36)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
-    <column id="306" parent="284" name="visit">
+    <column id="308" parent="284" name="visit">
       <DataType>int(11)|0s</DataType>
       <DefaultExpression>0</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
-    <column id="307" parent="284" name="part">
+    <column id="309" parent="284" name="part">
       <DataType>int(11)|0s</DataType>
       <DefaultExpression>0</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>3</Position>
     </column>
-    <foreign-key id="308" parent="284" name="fk">
+    <foreign-key id="310" parent="284" name="fk">
       <ColNames>uuid</ColNames>
       <OnDelete>cascade</OnDelete>
       <RefColNames>uuid</RefColNames>
       <RefTableName>list</RefTableName>
     </foreign-key>
-    <key id="309" parent="284" name="PRIMARY">
+    <key id="311" parent="284" name="PRIMARY">
       <ColNames>uuid</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
     </key>
-    <column id="310" parent="285" name="uuid">
+    <column id="312" parent="285" name="uuid">
       <DataType>char(36)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
-    <column id="311" parent="285" name="optionId">
+    <column id="313" parent="285" name="optionId">
       <DataType>char(39)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
-    <column id="312" parent="285" name="content">
+    <column id="314" parent="285" name="content">
       <DataType>varchar(255)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>3</Position>
     </column>
-    <column id="313" parent="285" name="image">
+    <column id="315" parent="285" name="image">
       <DataType>char(100)|0s</DataType>
       <Position>4</Position>
     </column>
-    <key id="314" parent="285" name="PRIMARY">
+    <column id="316" parent="285" name="num">
+      <DataType>int(11)|0s</DataType>
+      <DefaultExpression>0</DefaultExpression>
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+    </column>
+    <key id="317" parent="285" name="PRIMARY">
       <ColNames>optionId
 uuid</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
     </key>
-    <column id="315" parent="286" name="id">
+    <column id="318" parent="286" name="id">
       <DataType>int(10) unsigned|0s</DataType>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <SequenceIdentity>null</SequenceIdentity>
     </column>
-    <column id="316" parent="286" name="account">
+    <column id="319" parent="286" name="account">
       <DataType>char(50)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
-    <column id="317" parent="286" name="password">
+    <column id="320" parent="286" name="password">
       <DataType>char(50)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>3</Position>
     </column>
-    <column id="318" parent="286" name="permission">
+    <column id="321" parent="286" name="permission">
       <DataType>int(1)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>4</Position>
     </column>
-    <column id="319" parent="286" name="registerTime">
+    <column id="322" parent="286" name="registerTime">
       <DataType>timestamp|0s</DataType>
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>5</Position>
     </column>
-    <key id="320" parent="286" name="PRIMARY">
+    <key id="323" parent="286" name="PRIMARY">
       <ColNames>id
 account</ColNames>
       <NameSurrogate>1</NameSurrogate>

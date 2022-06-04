@@ -22,7 +22,7 @@ public class login extends HttpServlet {
 
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    if(Utils.requestCheck(request, response)) return;
+    if (Utils.requestCheck(request, response)) return;
     JSONObject reqJson = JSONObject.parseObject(Utils.getRequestBodyText(request));
     JSONObject resJson = new JSONObject();
     Connection conn = DB.getConn();
@@ -36,12 +36,12 @@ public class login extends HttpServlet {
         JSONObject data = new JSONObject();
         data.put("skey", JwtToken.createToken(reqJson.getString("account")));
         data.put("permission", rs.getInt("permission"));
-        Utils.returnSuccess(resJson,response,data);
+        Utils.returnSuccess(resJson, response, data);
       } else {
-        Utils.returnFail(resJson,response);
+        Utils.returnFail(resJson, response);
       }
     } catch (SQLException e) {
-      Utils.returnFail(resJson,response);
+      Utils.returnFail(resJson, response);
       e.printStackTrace();
     }
     try {
