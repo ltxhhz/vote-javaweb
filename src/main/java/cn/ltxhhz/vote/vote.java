@@ -79,6 +79,9 @@ public class vote extends HttpServlet {
         } else {
           Utils.returnSuccess(resJson, response);
         }
+        ps = conn.prepareStatement("update num set part=part+1 where uuid=?;");
+        ps.setString(1, reqJson.getString("uuid"));
+        ps.executeUpdate();
       } else {
         Utils.returnFail(resJson, response);
       }

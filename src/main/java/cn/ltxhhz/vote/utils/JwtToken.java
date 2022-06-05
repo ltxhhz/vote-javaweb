@@ -36,6 +36,7 @@ public class JwtToken {
     Calendar nowTime = Calendar.getInstance();
     //设置过期时间
     nowTime.add(remember ? Calendar.MONTH : Calendar.DAY_OF_YEAR, 1);
+    //防止超过一年年份不变
     if (nowTime.getTimeInMillis() < iatDate.getTime()) nowTime.add(Calendar.YEAR, 1);
     //得到时间
     Date expiresDate = nowTime.getTime();
@@ -66,7 +67,7 @@ public class JwtToken {
    */
   public static Map<String, Claim> decryptToken(String token) {
     JWTVerifier verify = JWT.require(Algorithm.HMAC256(SECRET)).build();
-    DecodedJWT jwt = null;
+    DecodedJWT jwt;
     try {
       jwt = verify.verify(token);
     } catch (Exception e) {

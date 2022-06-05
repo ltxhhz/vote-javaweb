@@ -34,7 +34,7 @@ public class login extends HttpServlet {
       ResultSet rs = ps.executeQuery();
       if (rs.next()) {
         JSONObject data = new JSONObject();
-        data.put("skey", JwtToken.createToken(reqJson.getString("account")));
+        data.put("skey", JwtToken.createToken(reqJson.getString("account"),reqJson.getBooleanValue("remember")));
         data.put("permission", rs.getInt("permission"));
         Utils.returnSuccess(resJson, response, data);
       } else {

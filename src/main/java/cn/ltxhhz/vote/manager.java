@@ -33,7 +33,7 @@ public class manager extends HttpServlet {
     }
     Connection conn = DB.getConn();
     try {
-      PreparedStatement ps = conn.prepareStatement("select *,visit,part from list,num where account=?;");
+      PreparedStatement ps = conn.prepareStatement("select *,visit,part from list,num where account=? and list.uuid=num.uuid;");
       ps.setString(1, account);
       ResultSet rs = ps.executeQuery();
       JSONArray data = new JSONArray();
